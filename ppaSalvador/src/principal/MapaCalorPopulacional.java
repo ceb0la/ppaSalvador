@@ -50,17 +50,23 @@ public class MapaCalorPopulacional extends PApplet {
 		println("Loaded " + dataEntriesMap.size() + " data entries");
 
 		// Country markers are shaded according to its population density (only once)
-		shadeCountries();
+		shadeArea();
 	}
 
 	public void draw() {
 		background(240);
-
+		 
 		// Draw map tiles and country markers
 		map.draw();
+		
+		//Map Title
+		String title ="Calor Populacional por Prefeitura Bairro";
+		textSize(32);
+		fill(255, 255, 255, 500);
+		text(title, (width/2)-100, height-10);
 	}
 
-	public void shadeCountries() {
+	public void shadeArea() {
 		for (Marker marker : countryMarkers) {
 			// Find data for country of the current marker
 			String placeId = marker.getId();
@@ -71,7 +77,7 @@ public class MapaCalorPopulacional extends PApplet {
 			if (dataEntry != null && dataEntry.value != null) {
 				// Encode value as brightness (values range: 0-1000)
 				float transparency = map(dataEntry.value, 0, 700, 10, 255);
-				marker.setColor(color(255, 0, 0, transparency));
+				marker.setColor(color(244, 98, 80, transparency));
 			} else {
 				// No value available
 				marker.setColor(color(100, 120));
@@ -107,5 +113,4 @@ public class MapaCalorPopulacional extends PApplet {
 		Integer year;
 		Float value;
 	}
-
 }
