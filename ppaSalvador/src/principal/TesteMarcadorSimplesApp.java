@@ -4,7 +4,11 @@ import processing.core.PApplet;
 import processing.core.PFont;
 import de.fhpotsdam.unfolding.UnfoldingMap;
 import de.fhpotsdam.unfolding.geo.Location;
+import de.fhpotsdam.unfolding.mapdisplay.MapDisplayFactory;
 import de.fhpotsdam.unfolding.marker.SimplePointMarker;
+import de.fhpotsdam.unfolding.providers.Google;
+import de.fhpotsdam.unfolding.providers.Microsoft;
+import de.fhpotsdam.unfolding.providers.OpenStreetMap;
 import de.fhpotsdam.unfolding.providers.OpenStreetMap.OpenStreetMapProvider;
 import de.fhpotsdam.unfolding.utils.MapUtils;
 import de.fhpotsdam.unfolding.utils.ScreenPosition;
@@ -29,6 +33,11 @@ import de.fhpotsdam.unfolding.utils.ScreenPosition;
 public class TesteMarcadorSimplesApp extends PApplet {
 
 	UnfoldingMap map;
+	UnfoldingMap map1;
+	UnfoldingMap map2;
+	UnfoldingMap map3;
+	UnfoldingMap map4;
+	UnfoldingMap currentMap;
 
 	SimplePointMarker markerCentro;
 	SimplePointMarker markerSuburbioIlhas;
@@ -44,12 +53,23 @@ public class TesteMarcadorSimplesApp extends PApplet {
 	public void setup() {
 		size(1800, 900, OPENGL);
 		smooth();
-
-		map = new UnfoldingMap(this, new OpenStreetMapProvider());
+		
+		map1 = new UnfoldingMap(this, new OpenStreetMapProvider());
+		map2 = new UnfoldingMap(this, new Google.GoogleMapProvider());//teste provider
+	    map3 = new UnfoldingMap(this, new Microsoft.AerialProvider());//teste provider
+	    map4 = new UnfoldingMap(this, new OpenStreetMap.CloudmadeProvider(MapDisplayFactory.OSM_API_KEY, 230588));//teste provider
+		
+	    map = new UnfoldingMap(this, new OpenStreetMapProvider());
 		// map.setTweening(true);
 		map.zoomToLevel(12);
+		map1.zoomAndPanTo(12, new Location(-12.99f, -38.5f));
+		map2.zoomAndPanTo(12, new Location(-12.9f, -38.5f));//teste provider
+	    map3.zoomAndPanTo(12, new Location(-12.9f, -38.5f));//teste provider
+	    map4.zoomAndPanTo(12, new Location(-12.9f, -38.5f));//teste provider
 		map.panTo(new Location(-12.890f, -38.5f));//-12.99f, -38.5f
 		MapUtils.createDefaultEventDispatcher(this, map);
+		//Choose the font of Map
+		currentMap = map1; //Provider utilizado
 
 		// Create Markers from Locations
 		Location locationCentro =new Location(-12.974, -38.511);

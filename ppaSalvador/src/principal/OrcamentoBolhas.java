@@ -1,6 +1,7 @@
 package principal;
 
 import java.awt.Color;
+import java.awt.geom.Ellipse2D;
 
 import processing.core.PApplet;
 import processing.data.Table;
@@ -17,8 +18,13 @@ public class OrcamentoBolhas extends PApplet {
 	
 	public void draw() {
 		background(255);
-		textSize(15);
 		line(0, (height / 2) + 200, width, (height / 2) + 200);
+		
+		//Map Title
+		String title ="Recurso Orçamentário e Extraorçamentário por Eixo";
+		textSize(32);
+		fill(0, 0, 0, 500);
+		text(title, (width/2)-400, 100);
 		
 		int[] style = {	color(1,22,39),
 						color(119,63,76),
@@ -33,11 +39,13 @@ public class OrcamentoBolhas extends PApplet {
 		// Loading the file into a table. “header” means that the first line of the file
 		// should be understood as a header.
 		Table tabela = loadTable("data/custos.tsv", "header");
-		
+		textSize(15);
 		float d = 0;
 		// Creates an action that will be repeated several times …
 		for (int i = 0; i < tabela.getRowCount(); i = i + 1) {
 			TableRow linha = tabela.getRow(i);
+			println(i);
+			println(tabela.getRowCount());
 			println("ID: " + linha.getInt("id") + " Orçamento: " + linha.getLong("orcamento"));
 
 			float perimeter = 0;
@@ -50,7 +58,7 @@ public class OrcamentoBolhas extends PApplet {
 
 			fill(style[i]);
 			ellipse(posX + (perimeter * 2), posY, perimeter, perimeter);
-
+			
 			fill(style[i]);
 			pushMatrix();
 			translate(posX + (perimeter * 2), posY - (perimeter / 2));

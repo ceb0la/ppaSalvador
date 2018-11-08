@@ -5,10 +5,6 @@ import processing.core.PApplet;
 import de.fhpotsdam.unfolding.UnfoldingMap;
 
 import de.fhpotsdam.unfolding.geo.Location;
-import de.fhpotsdam.unfolding.mapdisplay.MapDisplayFactory;
-import de.fhpotsdam.unfolding.providers.Google;
-import de.fhpotsdam.unfolding.providers.Microsoft;
-import de.fhpotsdam.unfolding.providers.OpenStreetMap;
 import de.fhpotsdam.unfolding.providers.OpenStreetMap.OpenStreetMapProvider;
 import de.fhpotsdam.unfolding.utils.MapUtils;
 import de.fhpotsdam.unfolding.utils.ScreenPosition;
@@ -21,33 +17,22 @@ import de.fhpotsdam.unfolding.utils.ScreenPosition;
  */
 public class LocalizacaoPrefeiturasBairro extends PApplet {
 
-	UnfoldingMap map1;
-	UnfoldingMap map2;
-	UnfoldingMap map3;
-	UnfoldingMap map4;
+	UnfoldingMap map;
 	UnfoldingMap currentMap;
 	
 	public void setup() {
 		size(1800, 1600, OPENGL);
 
-		map1 = new UnfoldingMap(this, new OpenStreetMapProvider());
-		map2 = new UnfoldingMap(this, new Google.GoogleMapProvider());//teste provider
-	    map3 = new UnfoldingMap(this, new Microsoft.AerialProvider());//teste provider
-	    map4 = new UnfoldingMap(this, new OpenStreetMap.CloudmadeProvider(MapDisplayFactory.OSM_API_KEY, 230588));//teste provider
-	    map1.zoomAndPanTo(12, new Location(-12.99f, -38.5f));
-	    map2.zoomAndPanTo(12, new Location(-12.9f, -38.5f));//teste provider
-	    map3.zoomAndPanTo(12, new Location(-12.9f, -38.5f));//teste provider
-	    map4.zoomAndPanTo(12, new Location(-12.9f, -38.5f));//teste provider
-		MapUtils.createDefaultEventDispatcher(this, map1, map2, map3);
-		//Chose font of Map
-		currentMap = map1; //Provider utilizado
+		map = new UnfoldingMap(this, new OpenStreetMapProvider());
+	    map.zoomAndPanTo(12, new Location(-12.99f, -38.5f));
+	    MapUtils.createDefaultEventDispatcher(this, map);
+	    currentMap = map;
 	}
 
 	public void draw() {
 		currentMap.draw();
 		fill(255, 255, 200, 255);
 		textSize(15);
-		
 		fill(0, 59, 72, 200);
 
 		// Centro
@@ -129,6 +114,11 @@ public class LocalizacaoPrefeiturasBairro extends PApplet {
 
 		String valeriaDescription = "Prefeitura Bairro Valeria" + (Location) valeria;
 		text(valeriaDescription, pos10.x, pos10.y);
+		
+		String title ="População por Prefeitura Bairro";
+		textSize(32);
+		
+		text(title, (width/2)-100, height-10);
 	}
 
 	public static void main(String[] args) {

@@ -11,6 +11,7 @@ import de.fhpotsdam.unfolding.data.GeoJSONReader;
 import de.fhpotsdam.unfolding.geo.Location;
 import de.fhpotsdam.unfolding.marker.Marker;
 import de.fhpotsdam.unfolding.providers.OpenStreetMap.OpenStreetMapProvider;
+import de.fhpotsdam.unfolding.utils.DebugDisplay;
 import de.fhpotsdam.unfolding.utils.MapUtils;
 
 /**
@@ -25,26 +26,27 @@ import de.fhpotsdam.unfolding.utils.MapUtils;
 public class MapaCalorPopulacional extends PApplet {
 
 	UnfoldingMap map;
-
+	DebugDisplay debugDisplay;
 	HashMap<String, DataEntry> dataEntriesMap;
-	List<Marker> countryMarkers;
+	List<Marker> areaMarkers;
 
 	public void setup() {
-		size(1300, 900, OPENGL);
+		size(1800, 900, OPENGL);
 		smooth();
 
 		//map = new UnfoldingMap(this, 50, 50, 700, 500);
-		map = new UnfoldingMap(this, new OpenStreetMapProvider());
+		map = new UnfoldingMap(this, "População", new OpenStreetMapProvider());
 		map.zoomToLevel(2);
 		map.zoomAndPanTo(12, new Location(-12.89f, -38.5f));
 		map.setBackgroundColor(240);
 		MapUtils.createDefaultEventDispatcher(this, map);
+		debugDisplay = new DebugDisplay(this, map);
 
 		// Load country polygons and adds them as markers
 		List<Feature> countries = GeoJSONReader.loadData(this, "data/salvador.geo.json");
-		countryMarkers = MapUtils.createSimpleMarkers(countries);
-		map.addMarkers(countryMarkers);
-
+		areaMarkers = MapUtils.createSimpleMarkers(countries);
+		map.addMarkers(areaMarkers);
+		
 		// Load population data
 		dataEntriesMap = loadPopulationDensityFromCSV("data/populacao.csv");
 		println("Loaded " + dataEntriesMap.size() + " data entries");
@@ -58,17 +60,19 @@ public class MapaCalorPopulacional extends PApplet {
 		 
 		// Draw map tiles and country markers
 		map.draw();
+		debugDisplay.draw();
 		
 		//Map Title
-		String title ="Calor Populacional por Prefeitura Bairro";
+		String title ="População por Prefeitura Bairro";
 		textSize(32);
 		fill(255, 255, 255, 500);
 		text(title, (width/2)-100, height-10);
+		
 	}
 
 	public void shadeArea() {
-		for (Marker marker : countryMarkers) {
-			// Find data for country of the current marker
+		for (Marker marker : areaMarkers) {
+			// Find data for area of the current marker
 			String placeId = marker.getId();
 			System.out.println("Id do Json: "+placeId);
 			DataEntry dataEntry = dataEntriesMap.get(placeId);
@@ -77,7 +81,8 @@ public class MapaCalorPopulacional extends PApplet {
 			if (dataEntry != null && dataEntry.value != null) {
 				// Encode value as brightness (values range: 0-1000)
 				float transparency = map(dataEntry.value, 0, 700, 10, 255);
-				marker.setColor(color(244, 98, 80, transparency));
+				//marker.setColor(color(244, 98, 80, transparency));//vermelho
+				marker.setColor(color(255, 100, 0, transparency));//laranja
 			} else {
 				// No value available
 				marker.setColor(color(100, 120));
@@ -97,7 +102,7 @@ public class MapaCalorPopulacional extends PApplet {
 			if (columns.length >= 3) {
 				DataEntry dataEntry = new DataEntry();
 				dataEntry.place = columns[0];	//first column
-				System.out.println("Pais do arquivo: "+ dataEntry.place);
+				System.out.println("Bairro do arquivo: "+ dataEntry.place);
 				dataEntry.id = columns[1];	//Second column
 				dataEntry.value = Float.parseFloat(columns[2]); 	//third column
 				dataEntriesMap.put(dataEntry.id, dataEntry);
